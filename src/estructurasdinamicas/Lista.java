@@ -286,6 +286,5 @@ public class Lista {
     private void reordenaNodoAFinal(Nodo nodo)
     {
         this.inicializaRecorrido();
-        this.buscaNodoAnterior(auxiliar.getIndiceNodo());
     }
 }
