@@ -8,7 +8,14 @@ public class TestLista {
         lista1.insertaNodo();
         lista1.insertaNodo();
         lista1.insertaNodo();
+        lista1.imprimeTodo();
+        System.out.println("");
         lista1.insertaNodo(0);
+        lista1.insertaNodo();
+        lista1.imprimeTodo();
+        System.out.println("");
+        lista1.insertaNodo(1);
+        lista1.insertaNodo(5);
         lista1.imprimeTodo();
         System.out.println("lista1.getContadorNodos() = " + lista1.getContadorNodos());
     }
