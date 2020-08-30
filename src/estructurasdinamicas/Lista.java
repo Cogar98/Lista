@@ -7,7 +7,7 @@ public class Lista {
     private Nodo apuntador;
     private Nodo ultimoNodo;
     private int contadorNodos; // tamaño
-    private boolean vacia;
+    private boolean vacia = true; // valor inicial
     private boolean ordenada;
 
     // CLASES
@@ -152,7 +152,7 @@ public class Lista {
     public boolean isVacia() {
         if(this.contadorNodos == 0)
             return this.vacia = true;
-        return this.vacia;
+        return this.vacia = false;
     }
    
     public boolean isOrdenada() {
@@ -243,12 +243,12 @@ public class Lista {
             this.apuntador.setSiguiente(new Nodo());
             this.apuntador.getSiguiente().setIndiceNodo(contadorNodos++); // Aumento Pos-Order
             this.ultimoNodo = this.apuntador.getSiguiente();
+            this.vacia = false;
         }
     }
     
     public void insertaNodo(int posicion)
     { // inserta un nuevo nodo en la posicion si es posible
-        
         if(isVacia() && posicion == 0) // lista VACIA
         { 
             this.insertaNodo();
@@ -265,6 +265,7 @@ public class Lista {
             this.apuntaAlUltimo();
             this.ultimoNodo = this.apuntador; // reapunta el ultimoNodo
             this.contadorNodos++;
+            this.vacia = false;
         }
         else if(0 < posicion && posicion < this.Tamanio())
         {
@@ -277,6 +278,7 @@ public class Lista {
             this.apuntador.setSiguiente(auxiiar2);
             this.recorreIndices(posicion);
             this.contadorNodos++;
+            this.vacia = false;
         }
         else
         {
@@ -284,10 +286,64 @@ public class Lista {
         }
     }
     
+    public void insertaNodo(int posicion,Object objeto, String nombre, String apellidoPaterno,
+                String apellidoMaterno, int edad )
+    {
+        if(isVacia() && posicion == 0) // lista VACIA
+        { 
+            this.insertaNodo(objeto, nombre, apellidoPaterno, apellidoMaterno, edad);
+        }
+        else if(!isVacia() && posicion == 0) // lista NO VACIA
+        {
+            this.inicializaRecorrido();
+            var auxiliar = this.apuntador; 
+            this.apuntador = new Nodo(objeto, nombre, apellidoPaterno, apellidoMaterno, edad); 
+            this.nodoInicial = this.apuntador;
+            this.apuntador.setSiguiente(auxiliar); // se reapunto
+            this.apuntador.setIndiceNodo(posicion);
+            this.recorreIndices(posicion);
+            this.apuntaAlUltimo();
+            this.ultimoNodo = this.apuntador; // reapunta el ultimoNodo
+            this.contadorNodos++;
+            this.vacia = false;
+        }
+        else if(0 < posicion && posicion < this.Tamanio())
+        {
+            this.buscaAnterior(posicion);
+            //var auxiliar1 = this.apuntador; // guarda Nodo Anterior
+            var auxiiar2 = this.apuntador.getSiguiente(); // nodo siguiente que se recorrera
+            this.apuntador.setSiguiente(new Nodo(objeto, nombre, apellidoPaterno, apellidoMaterno, edad));    // inserta nuevo
+            this.apuntador = this.apuntador.getSiguiente(); // avanza
+            this.apuntador.setIndiceNodo(posicion);
+            this.apuntador.setSiguiente(auxiiar2);
+            this.recorreIndices(posicion);
+            this.contadorNodos++;
+            this.vacia = false;
+        }
+        else
+        {
+            System.out.println("Posicion fuera del dominio, OPERACION IMPOSIBLE");
+        }        
+    }
+    
     public void insertaNodo(Object objeto, String nombre, String apellidoPaterno,
                 String apellidoMaterno, int edad)
     {
-        
+        if(isVacia())
+        {
+            this.nodoInicial = this.ultimoNodo = new Nodo(objeto, nombre, apellidoPaterno, apellidoMaterno, edad);
+            this.nodoInicial.setIndiceNodo(this.contadorNodos++);
+            this.vacia = false;
+        }
+        else
+        {
+            this.apuntaAlUltimo();
+            this.apuntador.setSiguiente(new Nodo(objeto, nombre, apellidoPaterno, apellidoMaterno, edad));
+            this.apuntador = this.apuntador.getSiguiente();
+            this.apuntador.setIndiceNodo(this.contadorNodos++);
+            this.ultimoNodo = this.apuntador;
+            this.vacia = false;
+        }
     }
     
     private void recorreIndices(int posicion) // Recorre de forma
@@ -306,4 +362,19 @@ public class Lista {
                     this.apuntador = this.apuntador.getSiguiente(); // avanza
         }
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Lista{nodoInicial=").append(nodoInicial);
+        sb.append(", apuntador=").append(apuntador);
+        sb.append(", ultimoNodo=").append(ultimoNodo);
+        sb.append(", contadorNodos=").append(contadorNodos);
+        sb.append(", vacia=").append(vacia);
+        sb.append(", ordenada=").append(ordenada);
+        sb.append('}');
+        return sb.toString();
+    }
+    
+    
 }
