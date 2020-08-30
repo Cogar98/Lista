@@ -3,12 +3,14 @@ package estructurasdinamicas;
 
 public class Lista {
     // ATRIBUTOS Y OBJETOS
-    private Nodo nodoInicial;
+    private Nodo primero;
     private Nodo apuntador;
-    private Nodo ultimoNodo;
+    private Nodo ultimo;
     private int contadorNodos; // tamaño
     private boolean vacia = true; // valor inicial
-    private boolean ordenada;
+    private Boolean ordenada; // indica si esta ordenada o no lo esta [true / false]
+
+
 
     // CLASES
     private final class Nodo
@@ -117,12 +119,12 @@ public class Lista {
     }
     
     // SETTERS Y GETTERS
-    public Nodo getNodoInicial() {
-        return this.nodoInicial;
+    public Nodo getPrimero() {
+        return this.primero;
     }
 
-    public void setNodoInicial(Nodo nodoInicial) {
-        this.nodoInicial = nodoInicial;
+    public void setPrimero(Nodo nodoInicial) {
+        this.primero = nodoInicial;
     }
 
     public Nodo getApuntador() {
@@ -133,12 +135,12 @@ public class Lista {
         this.apuntador = apuntador;
     }
 
-    public Nodo getUltimoNodo() {
-        return this.ultimoNodo;
+    public Nodo getUltimo() {
+        return this.ultimo;
     }
 
-    public void setUltimoNodo(Nodo ultimoNodo) {
-        this.ultimoNodo = ultimoNodo;
+    public void setUltimo(Nodo ultimoNodo) {
+        this.ultimo = ultimoNodo;
     }
 
     public int getContadorNodos() {
@@ -165,10 +167,10 @@ public class Lista {
      
     private void inicializaRecorrido()
     {
-        this.apuntador = this.nodoInicial;
+        this.apuntador = this.primero;
     }
             
-    public void apuntaAlUltimo()
+    private void apuntaAlUltimo()
     {
         this.inicializaRecorrido();
         while(!this.esUltimo(apuntador))
@@ -233,8 +235,8 @@ public class Lista {
     {
         if(isVacia())
         {
-            this.nodoInicial = this.ultimoNodo = new Nodo(); // Aqui creamos el primer nodo
-            this.nodoInicial.setIndiceNodo(contadorNodos++); // Aumento en Pos-Order
+            this.primero = this.ultimo = new Nodo(); // Aqui creamos el primer nodo
+            this.primero.setIndiceNodo(contadorNodos++); // Aumento en Pos-Order
             this.vacia = false; // y estableciendo una lista NO vacia
         }
         else
@@ -242,7 +244,7 @@ public class Lista {
             this.apuntaAlUltimo();
             this.apuntador.setSiguiente(new Nodo());
             this.apuntador.getSiguiente().setIndiceNodo(contadorNodos++); // Aumento Pos-Order
-            this.ultimoNodo = this.apuntador.getSiguiente();
+            this.ultimo = this.apuntador.getSiguiente();
             this.vacia = false;
         }
     }
@@ -258,12 +260,12 @@ public class Lista {
             this.inicializaRecorrido();
             var auxiliar = this.apuntador; 
             this.apuntador = new Nodo(); 
-            this.nodoInicial = this.apuntador;
+            this.primero = this.apuntador;
             this.apuntador.setSiguiente(auxiliar); // se reapunto
             this.apuntador.setIndiceNodo(posicion);
             this.recorreIndices(posicion);
             this.apuntaAlUltimo();
-            this.ultimoNodo = this.apuntador; // reapunta el ultimoNodo
+            this.ultimo = this.apuntador; // reapunta el ultimoNodo
             this.contadorNodos++;
             this.vacia = false;
         }
@@ -298,12 +300,12 @@ public class Lista {
             this.inicializaRecorrido();
             var auxiliar = this.apuntador; 
             this.apuntador = new Nodo(objeto, nombre, apellidoPaterno, apellidoMaterno, edad); 
-            this.nodoInicial = this.apuntador;
+            this.primero = this.apuntador;
             this.apuntador.setSiguiente(auxiliar); // se reapunto
             this.apuntador.setIndiceNodo(posicion);
             this.recorreIndices(posicion);
             this.apuntaAlUltimo();
-            this.ultimoNodo = this.apuntador; // reapunta el ultimoNodo
+            this.ultimo = this.apuntador; // reapunta el ultimoNodo
             this.contadorNodos++;
             this.vacia = false;
         }
@@ -331,8 +333,8 @@ public class Lista {
     {
         if(isVacia())
         {
-            this.nodoInicial = this.ultimoNodo = new Nodo(objeto, nombre, apellidoPaterno, apellidoMaterno, edad);
-            this.nodoInicial.setIndiceNodo(this.contadorNodos++);
+            this.primero = this.ultimo = new Nodo(objeto, nombre, apellidoPaterno, apellidoMaterno, edad);
+            this.primero.setIndiceNodo(this.contadorNodos++);
             this.vacia = false;
         }
         else
@@ -341,7 +343,7 @@ public class Lista {
             this.apuntador.setSiguiente(new Nodo(objeto, nombre, apellidoPaterno, apellidoMaterno, edad));
             this.apuntador = this.apuntador.getSiguiente();
             this.apuntador.setIndiceNodo(this.contadorNodos++);
-            this.ultimoNodo = this.apuntador;
+            this.ultimo = this.apuntador;
             this.vacia = false;
         }
     }
@@ -363,14 +365,28 @@ public class Lista {
         }
     }
     
+    private void retrocedeIndices(int posicion) 
+    {
+        if(!isVacia())
+        {
+            this.inicializaRecorrido();
+            while(this.apuntador != null) // recorre hasta llegar al nodo ultimo.siguiente = null
+            {
+                if(posicion <= this.apuntador.getIndiceNodo())
+                    this.apuntador.setIndiceNodo(this.apuntador.getIndiceNodo() - 1);
+                this.apuntador = this.apuntador.getSiguiente();
+            }
+        }
+    }    
+    
     public void remueveUltimoNodo()
     {
         if(!isVacia())
         {
             this.inicializaRecorrido();
-            if(this.apuntador == this.ultimoNodo)
+            if(this.apuntador == this.ultimo)
             {
-                this.apuntador = this.nodoInicial = this.ultimoNodo = null;
+                this.apuntador = this.primero = this.ultimo = null;
                 this.vacia = true;
             }
             else
@@ -380,7 +396,7 @@ public class Lista {
                     this.apuntador = this.apuntador.getSiguiente();
                 }            
                 this.apuntador.setSiguiente(null);
-                this.ultimoNodo = this.apuntador;     
+                this.ultimo = this.apuntador;     
                 this.vacia = false;
             }
             this.contadorNodos--;
@@ -391,12 +407,53 @@ public class Lista {
         }
     }
     
+    public void remuevePrimerNodo()
+    {
+        if(!isVacia() && this.contadorNodos == 1)
+        {
+            this.primero = this.ultimo = null;
+            this.contadorNodos--;
+            this.vacia = true;
+            this.ordenada = null;
+        }
+        else if(!isVacia() && 1 < this.contadorNodos)
+        {
+            this.primero = this.primero.getSiguiente();
+            this.contadorNodos--;
+            this.vacia = false;
+            this.retrocedeIndices(this.primero.getIndiceNodo());
+            this.ordenada = true;
+        }
+    }
+    
+    public void remueveNodo(int posicion)
+    {
+        if(!isVacia() && 0 <= posicion && posicion < this.Tamanio()) // evita ejecutarse y errores de NullPointerException
+        {
+            if( posicion == 0)
+                this.remuevePrimerNodo();
+            else if( posicion == this.ultimo.getIndiceNodo())
+                this.remueveUltimoNodo();
+            else
+            {
+                this.buscaNodo(posicion + 1);
+                var auxiliar = this.apuntador;
+                this.buscaAnterior(posicion);
+                this.apuntador.setSiguiente(auxiliar);
+                this.retrocedeIndices(posicion + 1);
+                this.contadorNodos--;
+            }
+        }
+        else
+            System.out.println("OPERACION IMPOSIBLE, revise posicion y tamaño de la lista");
+    }
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Lista{nodoInicial=").append(this.nodoInicial);
+        sb.append("Lista{nodoInicial=").append(this.primero);
         sb.append(", apuntador=").append(this.apuntador);
-        sb.append(", ultimoNodo=").append(this.ultimoNodo);
+        sb.append(", ultimoNodo=").append(this.ultimo);
         sb.append(", contadorNodos=").append(this.contadorNodos);
         sb.append(", vacia=").append(this.vacia);
         sb.append(", ordenada=").append(this.ordenada);
