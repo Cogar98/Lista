@@ -145,10 +145,6 @@ public class Lista {
         return this.contadorNodos;
     }
 
-    public void setContadorNodos(int contadorNodos) {
-        this.contadorNodos = contadorNodos;
-    }
- 
     public boolean isVacia() {
         if(this.contadorNodos == 0)
             return this.vacia = true;
@@ -160,14 +156,14 @@ public class Lista {
     }
 
     // METODOS
-    public boolean esUltimo(Nodo nodo)
+    private boolean esUltimo(Nodo nodo)
      {
-         if(nodo.getSiguiente() == null) // Valida que estemos en el ultimo nodo
+         if(nodo.getSiguiente() == null && !isVacia()) // Valida que estemos en el ultimo nodo
              return true;              // true = ultimo y false = es cualquier otro nodo
          return false;
      }
      
-    public void inicializaRecorrido()
+    private void inicializaRecorrido()
     {
         this.apuntador = this.nodoInicial;
     }
@@ -217,11 +213,15 @@ public class Lista {
     {
         this.inicializaRecorrido();
         System.out.println("this.apuntador = " + this.apuntador);
-        while(!this.esUltimo(apuntador))
+        
+        if(!this.isVacia())
         {
-            this.apuntador = this.apuntador.getSiguiente();
-            System.out.println("this.apuntador = " + this.apuntador);
-        }       
+            while(!this.esUltimo(apuntador))
+            {
+                this.apuntador = this.apuntador.getSiguiente();
+                System.out.println("this.apuntador = " + this.apuntador);
+            }                  
+        }
     }
     
     public int Tamanio()
@@ -362,19 +362,46 @@ public class Lista {
                     this.apuntador = this.apuntador.getSiguiente(); // avanza
         }
     }
-
+    
+    public void remueveUltimoNodo()
+    {
+        if(!isVacia())
+        {
+            this.inicializaRecorrido();
+            if(this.apuntador == this.ultimoNodo)
+            {
+                this.apuntador = this.nodoInicial = this.ultimoNodo = null;
+                this.vacia = true;
+            }
+            else
+            {
+                while(!this.esUltimo(this.apuntador.getSiguiente()) && !this.esUltimo(this.apuntador))
+                {
+                    this.apuntador = this.apuntador.getSiguiente();
+                }            
+                this.apuntador.setSiguiente(null);
+                this.ultimoNodo = this.apuntador;     
+                this.vacia = false;
+            }
+            this.contadorNodos--;
+        }
+        else
+        {
+            System.out.println("Operacion imposible. contadorNodos = " + this.contadorNodos);
+        }
+    }
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Lista{nodoInicial=").append(nodoInicial);
-        sb.append(", apuntador=").append(apuntador);
-        sb.append(", ultimoNodo=").append(ultimoNodo);
-        sb.append(", contadorNodos=").append(contadorNodos);
-        sb.append(", vacia=").append(vacia);
-        sb.append(", ordenada=").append(ordenada);
+        sb.append("Lista{nodoInicial=").append(this.nodoInicial);
+        sb.append(", apuntador=").append(this.apuntador);
+        sb.append(", ultimoNodo=").append(this.ultimoNodo);
+        sb.append(", contadorNodos=").append(this.contadorNodos);
+        sb.append(", vacia=").append(this.vacia);
+        sb.append(", ordenada=").append(this.ordenada);
         sb.append('}');
         return sb.toString();
     }
-    
     
 }

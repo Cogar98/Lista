@@ -8,12 +8,16 @@ public class TestLista {
         lista1.insertaNodo();
         lista1.insertaNodo();
         lista1.insertaNodo();
+        lista1.insertaNodo(2);
         lista1.imprimeTodo();
-        lista1.insertaNodo(0,"ID = 36543", "Jacqueline", "Robledo", "Cordova", 21);
-        lista1.insertaNodo(1,null, "Odette", "Quiroz", "Roman", 21);
-        lista1.insertaNodo(2,null, "Roberto", "Cordova", "Galvan", 21);
+        System.out.println("lista1.contadorNodos = " + lista1.getContadorNodos());
+        lista1.remueveUltimoNodo();
+        lista1.remueveUltimoNodo();
+        lista1.remueveUltimoNodo();
+        lista1.remueveUltimoNodo();
+        lista1.remueveUltimoNodo();
+        System.out.println("");
         lista1.imprimeTodo();
-        System.out.println("lista1 = " + lista1);
-        System.out.println("lista1.getContadorNodos() = " + lista1.getContadorNodos());
+        System.out.println("lista1.contadorNodos = " + lista1.getContadorNodos());
     }
 }
