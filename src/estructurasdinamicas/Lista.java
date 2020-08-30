@@ -20,7 +20,7 @@ public class Lista {
         private String nombre;
         private String apellidoPaterno;
         private String apellidoMaterno;
-        private int edad;
+        private byte edad;
         private int indiceNodo;
         // ENLACE O SIGUIENTE
         private Nodo siguiente;
@@ -32,7 +32,7 @@ public class Lista {
         }
         
         public Nodo(Object objeto, String nombre, String apellidoPaterno,
-                String apellidoMaterno, int edad)
+                String apellidoMaterno, byte edad)
         {
            this.objeto = objeto;
            this.nombre = nombre;
@@ -73,11 +73,11 @@ public class Lista {
             this.apellidoMaterno = apellidoMaterno;
         }
 
-        public int getEdad() {
+        public byte getEdad() {
             return this.edad;
         }
 
-        public void setEdad(int edad) {
+        public void setEdad(byte edad) {
             this.edad = edad;
         }
 
@@ -289,7 +289,7 @@ public class Lista {
     }
     
     public void insertaNodo(int posicion,Object objeto, String nombre, String apellidoPaterno,
-                String apellidoMaterno, int edad )
+                String apellidoMaterno, byte edad )
     {
         if(isVacia() && posicion == 0) // lista VACIA
         { 
@@ -329,7 +329,7 @@ public class Lista {
     }
     
     public void insertaNodo(Object objeto, String nombre, String apellidoPaterno,
-                String apellidoMaterno, int edad)
+                String apellidoMaterno, byte edad)
     {
         if(isVacia())
         {
@@ -447,6 +447,36 @@ public class Lista {
         else
             System.out.println("OPERACION IMPOSIBLE, revise posicion y tamaño de la lista");
     }
+    
+    public void modificaDatos(int posicion,Object objeto, String nombre, 
+            String apellidoPaterno, String apellidoMaterno, byte edad)
+    {
+        if(0 <= posicion && posicion < this.Tamanio())
+        {
+            this.buscaNodo(posicion);
+            this.apuntador.setObjeto(objeto);
+            this.apuntador.setNombre(nombre);
+            this.apuntador.setApellidoPaterno(apellidoPaterno);
+            this.apuntador.setApellidoMaterno(apellidoMaterno);
+            this.apuntador.setEdad(edad);
+        }
+        else
+            System.out.println("OPERACION IMPOSIBLE, revise la posicion y tamaño de lista");
+    }
+     public void modificaDatos(int posicion,String nombre, 
+            String apellidoPaterno, String apellidoMaterno, byte edad)
+    {
+        if(0 <= posicion && posicion < this.Tamanio())
+        {
+            this.buscaNodo(posicion);
+            this.apuntador.setNombre(nombre);
+            this.apuntador.setApellidoPaterno(apellidoPaterno);
+            this.apuntador.setApellidoMaterno(apellidoMaterno);
+            this.apuntador.setEdad(edad);
+        }
+        else
+            System.out.println("OPERACION IMPOSIBLE, revise la posicion y tamaño de lista");
+    }   
     
     @Override
     public String toString() {
