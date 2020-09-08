@@ -1,6 +1,8 @@
 
 package estructurasdinamicas;
-
+// IMPORTANTE
+// LOS METODOS QUE RECIBEN PARAMETRO NODO FUNCIONAN UNICAMENTE CON REFERENCIA EN MEMORIA
+// LOS METODOS QUE UTILIZAN POSICION FUNCIONAN CON EL INDICE DEL NODO SUPONIENDO QUE ESTE ORDENADA
 public class Lista {
     // ATRIBUTOS Y OBJETOS
     private Nodo primero;
@@ -9,8 +11,6 @@ public class Lista {
     private int contadorNodos; // tamaño
     private boolean vacia = true; // valor inicial
     private Boolean ordenada; // indica si esta ordenada o no lo esta [true / false]
-
-
 
     // CLASES
     private final class Nodo
@@ -118,6 +118,13 @@ public class Lista {
         this.vacia = true;
     }
     
+    public Lista(Nodo primero, Nodo ultimo, int contadorNodos)
+    {
+        this.primero = primero;
+        this.ultimo = ultimo;
+        this.contadorNodos = contadorNodos;
+    }
+    
     // SETTERS Y GETTERS
     public Nodo getPrimero() {
         return this.primero;
@@ -160,22 +167,34 @@ public class Lista {
     // METODOS
     private boolean esUltimo(Nodo nodo)
      {
-         if(nodo.getSiguiente() == null && !isVacia()) // Valida que estemos en el ultimo nodo
+         if(nodo != null && nodo.getSiguiente() == null && !isVacia()) // Valida que estemos en el ultimo nodo
              return true;              // true = ultimo y false = es cualquier otro nodo
          return false;
      }
+    
+    private boolean tieneSiguiente(Nodo nodo)
+     {
+         if(nodo.getSiguiente() != null) // Valida que el nodo posea un siguiente
+             return true;              // true = si tiene enlace
+         return false;  // false = no tiene un nodo siguiente
+     }    
      
     private void inicializaRecorrido()
     {
         this.apuntador = this.primero;
     }
+    
+    private void avanzaApuntador()
+    {
+        this.apuntador = this.apuntador.getSiguiente();
+    }
             
     private void apuntaAlUltimo()
     {
         this.inicializaRecorrido();
-        while(!this.esUltimo(apuntador))
+        while(!this.esUltimo(this.apuntador))
         {
-            this.apuntador = this.apuntador.getSiguiente();
+            this.avanzaApuntador();
         }
     }
     
@@ -184,7 +203,21 @@ public class Lista {
         this.inicializaRecorrido();
         while( (!this.esUltimo(this.apuntador)) && (this.apuntador.getIndiceNodo() != posicion) )
         {
-            this.apuntador = this.apuntador.getSiguiente();
+            this.avanzaApuntador();
+        }
+    }
+    
+    public void buscaNodo(Nodo nodo)
+    {
+        if(!isVacia())
+        {
+            this.inicializaRecorrido();
+            do
+            {
+                if(this.apuntador == nodo)
+                    break;
+                this.avanzaApuntador();
+            }while(!this.esUltimo(this.apuntador));
         }
     }
     
@@ -198,7 +231,7 @@ public class Lista {
             inicializaRecorrido();
             while(!esUltimo(this.apuntador) && posicion != this.apuntador.getSiguiente().getIndiceNodo())
             {
-                this.apuntador = this.apuntador.getSiguiente();
+                this.avanzaApuntador();
             }  // avanzara mientras no sea el ultimo nodo y el nodo siguiente sea distinto al del la posicion buscada
         }
         else if(isVacia())
@@ -211,6 +244,32 @@ public class Lista {
         }
     }
     
+    public void buscaAnterior(Nodo nodo)
+    {
+        if(!isVacia() && 1 < this.contadorNodos)
+        {
+            this.inicializaRecorrido();
+            while(this.apuntador.getSiguiente() != null)
+            {
+                if(this.apuntador == this.primero && this.apuntador == nodo)
+                {
+                    System.out.println("OPERACION IMPOSIBLE, el nodo es el primero de la lista");
+                    break;
+                }
+                else if(this.apuntador.getSiguiente() == nodo)
+                    break;
+                else
+                    this.avanzaApuntador();
+            }   // al romper el ciclo, this.apuntador es el nodo anterior
+        }
+    }
+    
+    public void eliminaSiguiente(Nodo nodo)
+    {
+        if(!this.esUltimo(nodo))
+            nodo.setSiguiente(null);
+    }
+    
     public void imprimeTodo()
     {
         this.inicializaRecorrido();
@@ -220,7 +279,7 @@ public class Lista {
         {
             while(!this.esUltimo(apuntador))
             {
-                this.apuntador = this.apuntador.getSiguiente();
+                this.avanzaApuntador();
                 System.out.println("this.apuntador = " + this.apuntador);
             }                  
         }
@@ -238,10 +297,12 @@ public class Lista {
             this.primero = this.ultimo = new Nodo(); // Aqui creamos el primer nodo
             this.primero.setIndiceNodo(contadorNodos++); // Aumento en Pos-Order
             this.vacia = false; // y estableciendo una lista NO vacia
+            this.ordenada = true;
         }
         else
         {
-            this.apuntaAlUltimo();
+            //this.apuntaAlUltimo();
+            this.apuntador = this.ultimo;
             this.apuntador.setSiguiente(new Nodo());
             this.apuntador.getSiguiente().setIndiceNodo(contadorNodos++); // Aumento Pos-Order
             this.ultimo = this.apuntador.getSiguiente();
@@ -264,8 +325,8 @@ public class Lista {
             this.apuntador.setSiguiente(auxiliar); // se reapunto
             this.apuntador.setIndiceNodo(posicion);
             this.recorreIndices(posicion);
-            this.apuntaAlUltimo();
-            this.ultimo = this.apuntador; // reapunta el ultimoNodo
+           // this.apuntaAlUltimo();
+            //this.ultimo = this.apuntador; // reapunta el ultimoNodo
             this.contadorNodos++;
             this.vacia = false;
         }
@@ -275,7 +336,7 @@ public class Lista {
             //var auxiliar1 = this.apuntador; // guarda Nodo Anterior
             var auxiiar2 = this.apuntador.getSiguiente(); // nodo siguiente que se recorrera
             this.apuntador.setSiguiente(new Nodo());    // inserta nuevo
-            this.apuntador = this.apuntador.getSiguiente(); // avanza
+            this.avanzaApuntador(); // avanza
             this.apuntador.setIndiceNodo(posicion);
             this.apuntador.setSiguiente(auxiiar2);
             this.recorreIndices(posicion);
@@ -315,7 +376,7 @@ public class Lista {
             //var auxiliar1 = this.apuntador; // guarda Nodo Anterior
             var auxiiar2 = this.apuntador.getSiguiente(); // nodo siguiente que se recorrera
             this.apuntador.setSiguiente(new Nodo(objeto, nombre, apellidoPaterno, apellidoMaterno, edad));    // inserta nuevo
-            this.apuntador = this.apuntador.getSiguiente(); // avanza
+            this.avanzaApuntador(); // avanza
             this.apuntador.setIndiceNodo(posicion);
             this.apuntador.setSiguiente(auxiiar2);
             this.recorreIndices(posicion);
@@ -341,13 +402,105 @@ public class Lista {
         {
             this.apuntaAlUltimo();
             this.apuntador.setSiguiente(new Nodo(objeto, nombre, apellidoPaterno, apellidoMaterno, edad));
-            this.apuntador = this.apuntador.getSiguiente();
+            this.avanzaApuntador();
             this.apuntador.setIndiceNodo(this.contadorNodos++);
             this.ultimo = this.apuntador;
             this.vacia = false;
         }
     }
     
+    private void insertaNodo(Nodo nodo)
+    {
+        if(this.tieneSiguiente(nodo)) // asegura que se inserte un unico nodo sin siguiente
+            nodo.setSiguiente(null); // elimina la referencia al siguiente nodo en caso que exista        
+        if(this.isVacia())
+        {
+            this.primero = this.ultimo = nodo;
+            this.primero.setIndiceNodo(this.contadorNodos++);
+            this.vacia = false;
+            this.ordenada = true;
+        }
+        else
+        {
+            this.apuntador = this.ultimo;
+            this.apuntador.setSiguiente(nodo);
+            this.apuntador.getSiguiente().setIndiceNodo(this.contadorNodos++);
+            this.avanzaApuntador();
+            this.vacia = false;
+        }
+    }
+    
+    private void insertaNodo(int posicion, Nodo nodo)
+    {
+        if(isVacia() && posicion == 0)
+        {
+            this.insertaNodo(nodo);
+        }
+        else if(!isVacia() && posicion == 0)
+        {
+            byte contadorPosicion = 0;
+            var auxiliar = this.primero;
+            this.primero = nodo;
+            this.primero.setIndiceNodo(0);
+            this.primero.setSiguiente(auxiliar);
+            this.apuntador = this.primero.getSiguiente();
+             // reordena los indices
+             while(this.apuntador != null)
+             {
+                if(posicion <= this.apuntador.getIndiceNodo())
+                    this.apuntador.setIndiceNodo(1 + contadorPosicion);
+                contadorPosicion++;
+                this.avanzaApuntador();
+             }
+            this.contadorNodos++;
+            this.ordenada = true;
+        }
+        else if(!isVacia() && 0 < posicion && posicion < this.Tamanio())
+        {
+            byte contadorPosicion , contadorBusqueda;
+            contadorPosicion = contadorBusqueda = 0;
+            
+            this.inicializaRecorrido();
+            do
+            {   // Este ciclo encuentra al nodo en la posicion que se necesita recorrer
+                if(contadorPosicion == posicion)
+                    break;
+                this.avanzaApuntador();
+                contadorPosicion++;
+            }while(this.tieneSiguiente(this.apuntador));
+
+            var auxiliar = this.apuntador; // se guarda el nodo que se recorrera 
+            this.inicializaRecorrido();
+
+            do
+            {   // Este ciclo me posiciona en el nodo anterior para la insercion
+                if(contadorBusqueda == contadorPosicion - 1)
+                    break;
+                this.avanzaApuntador();
+                contadorBusqueda++;
+            }while(this.tieneSiguiente(this.apuntador));
+            
+            this.apuntador.setSiguiente(nodo);
+            this.apuntador.getSiguiente().setIndiceNodo(posicion);
+            this.avanzaApuntador();
+            this.apuntador.setSiguiente(auxiliar);
+            // reordenamiento de los indices
+            do
+            {
+                if(this.apuntador.getSiguiente().getIndiceNodo() != this.apuntador.getIndiceNodo() + 1)
+                    this.apuntador.getSiguiente().setIndiceNodo(++contadorPosicion);
+                this.avanzaApuntador();
+            }while(!this.esUltimo(this.apuntador));
+            this.contadorNodos++;
+            this.ordenada = true;
+        }
+        else
+        {
+            System.out.println("OPERACION IMPOSIBLE, posicion deseada: " + posicion
+            + " | Tamaño de lista: " + this.Tamanio());
+        }
+    }
+
     private void recorreIndices(int posicion) // Recorre de forma
     {
         this.inicializaRecorrido();
@@ -356,12 +509,12 @@ public class Lista {
                if( this.apuntador.getIndiceNodo() == this.apuntador.getSiguiente().getIndiceNodo()
                        || this.apuntador.getIndiceNodo() > posicion)
                {
-                   this.apuntador = this.apuntador.getSiguiente(); // avanzo al nodo duplicado o desfasado
+                   this.avanzaApuntador(); // avanzo al nodo duplicado o desfasado
                    var nuevoIndice = this.apuntador.getIndiceNodo() + 1;
                    this.apuntador.setIndiceNodo(nuevoIndice);
                }
                else
-                    this.apuntador = this.apuntador.getSiguiente(); // avanza
+                    this.avanzaApuntador(); // avanza
         }
     }
     
@@ -374,7 +527,7 @@ public class Lista {
             {
                 if(posicion <= this.apuntador.getIndiceNodo())
                     this.apuntador.setIndiceNodo(this.apuntador.getIndiceNodo() - 1);
-                this.apuntador = this.apuntador.getSiguiente();
+                this.avanzaApuntador();
             }
         }
     }    
@@ -393,7 +546,7 @@ public class Lista {
             {
                 while(!this.esUltimo(this.apuntador.getSiguiente()) && !this.esUltimo(this.apuntador))
                 {
-                    this.apuntador = this.apuntador.getSiguiente();
+                    this.avanzaApuntador();
                 }            
                 this.apuntador.setSiguiente(null);
                 this.ultimo = this.apuntador;     
@@ -477,6 +630,29 @@ public class Lista {
         else
             System.out.println("OPERACION IMPOSIBLE, revise la posicion y tamaño de lista");
     }   
+     
+     public void reordenamientoIntercambio()
+     {  // Metodo por intercambio
+         if(!isVacia())
+         {
+             Lista backup = new Lista(this.primero, this.ultimo, this.contadorNodos);
+             Lista ordenada = new Lista();
+             this.inicializaRecorrido();
+             while(!this.esUltimo(this.apuntador.getSiguiente()) || this.esUltimo(this.apuntador))
+             {
+                 Nodo auxiliarPrimero = this.apuntador;
+                 if(auxiliarPrimero.getIndiceNodo() > this.apuntador.getIndiceNodo() )
+                 {
+                     
+                 }
+             }
+         }
+     }
+     
+     //                     IMPORTANTE!!
+     // LOS SIGUIENTES METODOS ARRIESGAN EL ORDEN DE LA LISTA
+     // La utilizacion de la variable ordenada sera indispensable
+     
     
     @Override
     public String toString() {
