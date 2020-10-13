@@ -118,6 +118,7 @@ public class Lista {
         this.vacia = true;
     }
     
+    // CLASES
     public Lista(Nodo primero, Nodo ultimo, int contadorNodos)
     {
         this.primero = primero;
@@ -162,6 +163,23 @@ public class Lista {
    
     public boolean isOrdenada() {
         return ordenada;
+    }
+    
+    public Boolean revisaOrden() // | True | False | Null |
+    {
+        if(!isVacia())  // valida que no sea lista vacia
+        {
+            this.inicializaRecorrido();
+            while(!this.esUltimo(this.apuntador))
+            {
+                if(this.apuntador.getIndiceNodo() != this.apuntador.getSiguiente().getIndiceNodo() - 1)
+                    return this.ordenada = false;
+                else
+                    this.avanzaApuntador();
+            }
+            return this.ordenada = true;
+        }
+        return this.ordenada = null;
     }
 
     // METODOS
@@ -352,41 +370,7 @@ public class Lista {
     public void insertaNodo(int posicion,Object objeto, String nombre, String apellidoPaterno,
                 String apellidoMaterno, byte edad )
     {
-        if(isVacia() && posicion == 0) // lista VACIA
-        { 
-            this.insertaNodo(objeto, nombre, apellidoPaterno, apellidoMaterno, edad);
-        }
-        else if(!isVacia() && posicion == 0) // lista NO VACIA
-        {
-            this.inicializaRecorrido();
-            var auxiliar = this.apuntador; 
-            this.apuntador = new Nodo(objeto, nombre, apellidoPaterno, apellidoMaterno, edad); 
-            this.primero = this.apuntador;
-            this.apuntador.setSiguiente(auxiliar); // se reapunto
-            this.apuntador.setIndiceNodo(posicion);
-            this.recorreIndices(posicion);
-            this.apuntaAlUltimo();
-            this.ultimo = this.apuntador; // reapunta el ultimoNodo
-            this.contadorNodos++;
-            this.vacia = false;
-        }
-        else if(0 < posicion && posicion < this.Tamanio())
-        {
-            this.buscaAnterior(posicion);
-            //var auxiliar1 = this.apuntador; // guarda Nodo Anterior
-            var auxiiar2 = this.apuntador.getSiguiente(); // nodo siguiente que se recorrera
-            this.apuntador.setSiguiente(new Nodo(objeto, nombre, apellidoPaterno, apellidoMaterno, edad));    // inserta nuevo
-            this.avanzaApuntador(); // avanza
-            this.apuntador.setIndiceNodo(posicion);
-            this.apuntador.setSiguiente(auxiiar2);
-            this.recorreIndices(posicion);
-            this.contadorNodos++;
-            this.vacia = false;
-        }
-        else
-        {
-            System.out.println("Posicion fuera del dominio, OPERACION IMPOSIBLE");
-        }        
+        this.insertaNodo(posicion,new Nodo(objeto, nombre, apellidoPaterno, apellidoMaterno, edad));
     }
     
     public void insertaNodo(Object objeto, String nombre, String apellidoPaterno,
@@ -425,7 +409,7 @@ public class Lista {
             this.apuntador = this.ultimo;
             this.apuntador.setSiguiente(nodo);
             this.apuntador.getSiguiente().setIndiceNodo(this.contadorNodos++);
-            this.avanzaApuntador();
+            this.ultimo = this.apuntador.getSiguiente();
             this.vacia = false;
         }
     }
@@ -494,13 +478,17 @@ public class Lista {
             this.contadorNodos++;
             this.ordenada = true;
         }
+        else if(!isVacia() && this.Tamanio() == posicion)
+        {
+            this.insertaNodo(nodo);
+        }
         else
         {
             System.out.println("OPERACION IMPOSIBLE, posicion deseada: " + posicion
             + " | Tamaño de lista: " + this.Tamanio());
         }
     }
-
+    
     private void recorreIndices(int posicion) // Recorre de forma
     {
         this.inicializaRecorrido();
@@ -653,7 +641,15 @@ public class Lista {
      // LOS SIGUIENTES METODOS ARRIESGAN EL ORDEN DE LA LISTA
      // La utilizacion de la variable ordenada sera indispensable
      
-    
+     public void ordenAscendenteEdad(Lista lista)
+     { 
+     }
+     
+     public void ordenDescendenteEdad()
+     {
+         
+     }
+     
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
