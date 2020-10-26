@@ -1,5 +1,6 @@
 
 package estructurasdinamicas;
+// GITHUB: Cogar98
 // IMPORTANTE
 // LOS METODOS QUE RECIBEN PARAMETRO NODO FUNCIONAN UNICAMENTE CON REFERENCIA EN MEMORIA
 // LOS METODOS QUE UTILIZAN POSICION FUNCIONAN CON EL INDICE DEL NODO SUPONIENDO QUE ESTE ORDENADA
@@ -10,7 +11,7 @@ public class Lista {
     private Nodo ultimo;
     private int contadorNodos; // tamaño
     private boolean vacia = true; // valor inicial
-    private Boolean ordenada; // indica si esta ordenada o no lo esta [true / false]
+    private Boolean ordenada; // indica si esta ordenada o no lo esta [true / false / null] null si no tiene nodos
 
     // CLASES
     private final class Nodo
@@ -119,52 +120,15 @@ public class Lista {
     }
     
     // CLASES
-    public Lista(Nodo primero, Nodo ultimo, int contadorNodos)
-    {
+    
+    private Lista(Nodo primero, Nodo ultimo, int contadorNodos)
+    { // ES PRIVADO PORQUE FUNCIONA SOLO PARA METODOS QUE RECIBAN COMO PARAMETRO NODO
         this.primero = primero;
         this.ultimo = ultimo;
         this.contadorNodos = contadorNodos;
     }
-    
-    // SETTERS Y GETTERS
-    public Nodo getPrimero() {
-        return this.primero;
-    }
 
-    public void setPrimero(Nodo nodoInicial) {
-        this.primero = nodoInicial;
-    }
-
-    public Nodo getApuntador() {
-        return this.apuntador;
-    }
-
-    public void setApuntador(Nodo apuntador) {
-        this.apuntador = apuntador;
-    }
-
-    public Nodo getUltimo() {
-        return this.ultimo;
-    }
-
-    public void setUltimo(Nodo ultimoNodo) {
-        this.ultimo = ultimoNodo;
-    }
-
-    public int getContadorNodos() {
-        return this.contadorNodos;
-    }
-
-    public boolean isVacia() {
-        if(this.contadorNodos == 0)
-            return this.vacia = true;
-        return this.vacia = false;
-    }
-   
-    public boolean isOrdenada() {
-        return ordenada;
-    }
-    
+    // METODOS
     public Boolean revisaOrden() // | True | False | Null |
     {
         if(!isVacia())  // valida que no sea lista vacia
@@ -182,7 +146,6 @@ public class Lista {
         return this.ordenada = null;
     }
 
-    // METODOS
     private boolean esUltimo(Nodo nodo)
      {
          if(nodo != null && nodo.getSiguiente() == null && !isVacia()) // Valida que estemos en el ultimo nodo
@@ -649,6 +612,45 @@ public class Lista {
      {
          
      }
+     
+     // GETTERS Y SETTERS
+    public Nodo getPrimero() {
+        return this.primero;
+    }
+
+    public void setPrimero(Nodo nodoInicial) {
+        this.primero = nodoInicial;
+    }
+
+    public Nodo getApuntador() {
+        return this.apuntador;
+    }
+
+    public void setApuntador(Nodo apuntador) {
+        this.apuntador = apuntador;
+    }
+
+    public Nodo getUltimo() {
+        return this.ultimo;
+    }
+
+    public void setUltimo(Nodo ultimoNodo) {
+        this.ultimo = ultimoNodo;
+    }
+
+    public int getContadorNodos() {
+        return this.contadorNodos;
+    }
+
+    public boolean isVacia() {
+        if(this.contadorNodos == 0)
+            return this.vacia = true;
+        return this.vacia = false;
+    }
+   
+    public boolean isOrdenada() {
+        return ordenada;
+    }     
      
     @Override
     public String toString() {
