@@ -356,7 +356,7 @@ public class Lista {
         }
     }
     
-    private void insertaNodo(Nodo nodo)
+    /*private void insertaNodo(Nodo nodo)
     {
         if(this.tieneSiguiente(nodo)) // asegura que se inserte un unico nodo sin siguiente
             nodo.setSiguiente(null); // elimina la referencia al siguiente nodo en caso que exista        
@@ -376,7 +376,7 @@ public class Lista {
             this.vacia = false;
         }
     }
-    
+    */
     private void insertaNodo(int posicion, Nodo nodo)
     {
         if(isVacia() && posicion == 0)
@@ -650,8 +650,27 @@ public class Lista {
    
     public boolean isOrdenada() {
         return ordenada;
-    }     
+    }
+    
+    public void insertaNodo(Nodo nodoBuscado)
+    {
+        inicializaRecorrido();
+        while(this.apuntador.getSiguiente() != nodoBuscado)
+        {   // esto nos posiciona en el anterior si el nodobuscado esta en la lista
+           this.avanzaApuntador();
+        }
+       Nodo nuevo = new Nodo(); // nodo nuevo
+       nuevo.setSiguiente(this.apuntador.getSiguiente()); // apunta el siguiente del apuntador anterior al siguiente del nuevo
+       this.apuntador.setSiguiente(nuevo); // se inserta el nuevo nodo, sin perder la demas lista
+    }
      
+    public void prueba()
+    {
+        this.buscaNodo(2);
+        Nodo nodo1 = this.apuntador;
+        this.buscaAnterior(4);
+        Nodo nodo2 = this.apuntador;
+    }
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

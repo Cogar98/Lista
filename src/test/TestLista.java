@@ -11,6 +11,8 @@ public class TestLista {
         alumnos.insertaNodo(2, null, "Juan", "Melendez", "Sanchez", (byte)20);
         alumnos.insertaNodo();
         alumnos.insertaNodo();
+        alumnos.insertaNodo();
+        alumnos.insertaNodo();
         alumnos.insertaNodo(new Object(), "t", "d", "o",(byte)0);
         alumnos.insertaNodo(1, new Object(), "Damian", "Sarabia", "Beltran", (byte)20);
         alumnos.imprimeTodo();
