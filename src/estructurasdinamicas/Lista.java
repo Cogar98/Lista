@@ -9,7 +9,8 @@ public class Lista {
     private Nodo primero;
     private Nodo apuntador;
     private Nodo ultimo;
-    private int contadorNodos; // tamaño
+    private int contadorNodos; // tamaño = indice + 1 
+    private int magnitud; // SIEMPRE magnitud = contadorNodos - 1 [0,n] 
     private boolean vacia = true; // valor inicial
     private Boolean ordenada; // indica si esta ordenada o no lo esta [true / false / null] null si no tiene nodos
 
@@ -333,7 +334,8 @@ public class Lista {
     public void insertaNodo(int posicion,Object objeto, String nombre, String apellidoPaterno,
                 String apellidoMaterno, byte edad )
     {
-        this.insertaNodo(posicion,new Nodo(objeto, nombre, apellidoPaterno, apellidoMaterno, edad));
+    //    if( 0<= posicion && posicion <= this.contadorNodos - 1 || posicion == 0 && this.contadorNodos == 0)
+            this.insertaNodo(posicion, new Nodo(objeto, nombre, apellidoPaterno, apellidoMaterno, edad));
     }
     
     public void insertaNodo(Object objeto, String nombre, String apellidoPaterno,
@@ -356,27 +358,6 @@ public class Lista {
         }
     }
     
-    /*private void insertaNodo(Nodo nodo)
-    {
-        if(this.tieneSiguiente(nodo)) // asegura que se inserte un unico nodo sin siguiente
-            nodo.setSiguiente(null); // elimina la referencia al siguiente nodo en caso que exista        
-        if(this.isVacia())
-        {
-            this.primero = this.ultimo = nodo;
-            this.primero.setIndiceNodo(this.contadorNodos++);
-            this.vacia = false;
-            this.ordenada = true;
-        }
-        else
-        {
-            this.apuntador = this.ultimo;
-            this.apuntador.setSiguiente(nodo);
-            this.apuntador.getSiguiente().setIndiceNodo(this.contadorNodos++);
-            this.ultimo = this.apuntador.getSiguiente();
-            this.vacia = false;
-        }
-    }
-    */
     private void insertaNodo(int posicion, Nodo nodo)
     {
         if(isVacia() && posicion == 0)
@@ -582,33 +563,86 @@ public class Lista {
             System.out.println("OPERACION IMPOSIBLE, revise la posicion y tamaño de lista");
     }   
      
-     public void reordenamientoIntercambio()
-     {  // Metodo por intercambio
-         if(!isVacia())
-         {
-             Lista backup = new Lista(this.primero, this.ultimo, this.contadorNodos);
-             Lista ordenada = new Lista();
-             this.inicializaRecorrido();
-             while(!this.esUltimo(this.apuntador.getSiguiente()) || this.esUltimo(this.apuntador))
-             {
-                 Nodo auxiliarPrimero = this.apuntador;
-                 if(auxiliarPrimero.getIndiceNodo() > this.apuntador.getIndiceNodo() )
-                 {
-                     
-                 }
-             }
-         }
-     }
-     
      //                     IMPORTANTE!!
      // LOS SIGUIENTES METODOS ARRIESGAN EL ORDEN DE LA LISTA
      // La utilizacion de la variable ordenada sera indispensable
      
-     public void ordenAscendenteEdad(Lista lista)
-     { 
+     // -----ALGORITMOS DE ORDENAMIENTO
+     // NOTESE QUE EN EL NOMBRE EL LA LETRA A = ASCENDENTE  Y D = DESCENDENTE
+     
+     private void intercambiaNodos(Lista lista,Nodo a, Nodo b)
+     {
+         // primero debemos verificar cual de los nodos a y b esta antes que el otro
+         Nodo auxiliar;
+         
+         lista.inicializaRecorrido();
+         while(!lista.esUltimo(lista.apuntador))
+         {
+             if(lista.apuntador == a || lista.apuntador == b)
+                 break;
+             lista.avanzaApuntador();
+         }
+         auxiliar = a;
+         a = lista.apuntador == a ? a : b ; // si encontre primero al nodo a se queda igual, caso contrario vale b
+         b = lista.apuntador == b ? auxiliar : b ; // si encontre a b hace un momento entonces b vale el auxiliar = a
+         // este codigo anterior lo hice para verificar el orden de los nodos al ingresarlos
+         
+         if( a == lista.primero || b == lista.primero )
+         {
+             Nodo target = a == lista.primero ? b : a;
+             auxiliar = lista.primero.getSiguiente();
+             
+             lista.buscaAnterior(target);
+             lista.apuntador.setSiguiente(lista.primero);
+             lista.avanzaApuntador();
+             lista.apuntador.setSiguiente(target.getSiguiente()); // asigna "a" o "b" si comparten referencia del primero
+             lista.primero = target;
+             lista.primero.setSiguiente(auxiliar);
+             System.out.println("FUNCIONA EL INTERCAMBIO");
+         }
+         else
+         {
+             auxiliar = a.getSiguiente();
+             lista.buscaAnterior(b);
+             lista.apuntador.setSiguiente(a);
+             a.setSiguiente(b.getSiguiente());
+             lista.buscaAnterior(a);
+             b.setSiguiente(auxiliar);
+             lista.apuntador.setSiguiente(b);
+             System.out.println("INTERCAMBIO NO PRIMERO FUNCIONA");
+         }
      }
      
-     public void ordenDescendenteEdad()
+     public void ordenEdadAIntercambio() // ordenamiento por edad Ascendente por metodo de intercambio
+     {
+      if(!isVacia())
+      {
+          int j,i;
+          this.inicializaRecorrido();
+          Nodo auxiliar1 = this.primero;
+          
+          for(j = 0 ; j < this.magnitud ; j++)
+          {
+              for( i = j + 1  ; i <= this.magnitud ; i++)
+              {
+                  if( auxiliar1.getEdad() > this.apuntador.getEdad())
+                  {
+                      this.intercambiaNodos(this , auxiliar1 , this.apuntador);
+                  }
+              }
+          }
+      }
+      else
+             System.out.println("Lista vacia cantidad de nodos: " + this.contadorNodos);
+     }
+     
+     private Lista ordenamientoIntercambio(Lista lista, Object objeto)
+     {
+         
+         return lista;
+     }
+     
+     public void ordenEdadDIntercambio() // ordenamiento por edad Descendente por metodo de intercambio
      {
          
      }
@@ -648,28 +682,44 @@ public class Lista {
         return this.vacia = false;
     }
    
-    public boolean isOrdenada() {
+    public boolean isOrdenada()  {
         return ordenada;
     }
     
-    public void insertaNodo(Nodo nodoBuscado)
-    {
-        inicializaRecorrido();
-        while(this.apuntador.getSiguiente() != nodoBuscado)
-        {   // esto nos posiciona en el anterior si el nodobuscado esta en la lista
-           this.avanzaApuntador();
+    private void insertaNodo(Nodo nuevoNodo) { // inserta al final
+        // Valida que solo tengamos un nodo a insertar sin enlace a siguiente
+        if(this.tieneSiguiente(nuevoNodo))
+            this.eliminaSiguiente(nuevoNodo);
+        // Insercion
+        if(isVacia())
+        {
+            this.primero = this.ultimo = nuevoNodo;
+            this.primero.setIndiceNodo(this.magnitud = this.contadorNodos++);
         }
-       Nodo nuevo = new Nodo(); // nodo nuevo
-       nuevo.setSiguiente(this.apuntador.getSiguiente()); // apunta el siguiente del apuntador anterior al siguiente del nuevo
-       this.apuntador.setSiguiente(nuevo); // se inserta el nuevo nodo, sin perder la demas lista
+        else if(!isVacia() && this.contadorNodos == 1)
+        {
+            this.primero.setSiguiente(nuevoNodo);
+            this.ultimo = this.primero.getSiguiente();
+            this.ultimo.setIndiceNodo(this.magnitud = contadorNodos++);
+        }
+        else
+        {
+            if(this.esUltimo(this.ultimo))
+            {
+                this.ultimo.setSiguiente(nuevoNodo);
+                this.ultimo = this.ultimo.getSiguiente();
+                this.ultimo.setIndiceNodo(this.magnitud = this.contadorNodos++);
+            }
+        }
     }
-     
+    
     public void prueba()
     {
-        this.buscaNodo(2);
-        Nodo nodo1 = this.apuntador;
-        this.buscaAnterior(4);
-        Nodo nodo2 = this.apuntador;
+        this.buscaNodo(3);
+        var aux1 = this.apuntador;
+        this.buscaNodo(6);
+        var aux2 = this.apuntador;
+        this.intercambiaNodos(this, aux1, aux2);
     }
     @Override
     public String toString() {
