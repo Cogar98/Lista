@@ -6,23 +6,16 @@ public class TestLista {
 
     public static void main(String[] args) {
         Lista alumnos = new Lista();
-
-        alumnos.insertaNodo(0, null, "Roberto", "Cordova", "Galvan", (byte)21);
-        alumnos.insertaNodo(1, null, "Alberto", "Armenta", "Galvan", (byte)27);
-        alumnos.insertaNodo(1, null, "Juan", "Melendez", "Sanchez", (byte)20);
-        alumnos.insertaNodo();
-        alumnos.insertaNodo();
-        alumnos.insertaNodo();
-        alumnos.insertaNodo();
-        alumnos.insertaNodo(new Object(), "t", "d", "o",(byte)0);
-        alumnos.insertaNodo(1, new Object(), "Damian", "Sarabia", "Beltran", (byte)20);
+        alumnos.insertaNodo(null, "Roberto", "Cordova", "Galvan", 8);
+        alumnos.insertaNodo(null, "Alberto", "Armenta", "Galvan", 4);
+        alumnos.insertaNodo(null, "Juan", "Melendez", "Sanchez", 6);
+        alumnos.insertaNodo(null,"Pedro","de la mar", "LOL", 2);
         alumnos.imprimeTodo();
-        alumnos.prueba();
+        System.out.println("FIN ORIGINAL");
+       // alumnos.prueba();
+        alumnos.ordenEdadAIntercambio();
         alumnos.imprimeTodo();
-        System.out.println("alumnos.revisaOrden() = " + alumnos.revisaOrden());
-        System.out.println("alumnos = " + alumnos);
         /*
-        
         */
         /*int [] a = {7,9,0,75};
         int i , j;
