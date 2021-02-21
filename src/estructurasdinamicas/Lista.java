@@ -189,7 +189,7 @@ public class Lista {
     {
         this.apuntador = this.apuntador.getSiguiente();
     }
-            
+    
     private void apuntaAlUltimo()
     {
         this.inicializaRecorrido();
@@ -216,8 +216,6 @@ public class Lista {
                         else
                             this.avanzaApuntador();
                     }
-                    
-                    System.out.println("Nodo buscado: " + this.apuntador);
                 }
                 else
                 {
@@ -233,7 +231,6 @@ public class Lista {
                 }
                 break;
         }
-        //System.out.println("NODO ENCONTRADO:" + this.apuntador);
     }
     
     public void buscaNodo(Nodo nodo)
@@ -627,51 +624,68 @@ public class Lista {
      // -----ALGORITMOS DE ORDENAMIENTO
      // NOTESE QUE EN EL NOMBRE EL LA LETRA A = ASCENDENTE  Y D = DESCENDENTE
      
-    private void intercambiaNodos(Lista lista, Nodo a, Nodo b) {
-        
-        if (!lista.isVacia() && a != b) { // la referencia en memoria debe ser distinta
-            // primero debemos verificar cual de los nodos a y b esta antes que el otro
-            Nodo auxiliar;
-
+    private void intercambiaNodos(Lista lista, Nodo a, Nodo b) 
+    {
+        if(!lista.isVacia() && 1 < lista.contadorNodos && a != b )
+        {
             lista.inicializaRecorrido();
-            while (!lista.esUltimo(lista.apuntador)) {
-                if (lista.apuntador == a || lista.apuntador == b) {
+            while(lista.apuntador != null)
+            {
+                if(lista.apuntador == a || lista.apuntador == b)
                     break;
-                }
+                else if(lista.apuntador == lista.apuntador.getSiguiente()) //** puedde omitirse
+                    System.out.println("NODOS APUNTADOR Y SIGUIENTE SON IGUALES ERROR!");
                 lista.avanzaApuntador();
             }
-            auxiliar = a;
-            a = lista.apuntador == a ? a : b; // si encontre primero al nodo a se queda igual, caso contrario vale b
-            b = lista.apuntador == b ? auxiliar : b; // si encontre a b hace un momento entonces b vale el auxiliar = a
-            // este codigo anterior lo hice para verificar el orden de los nodos al ingresarlos
-
-            if (a == lista.primero || b == lista.primero) {
-                Nodo target = a == lista.primero ? b : a;
-                auxiliar = lista.primero.getSiguiente();
-
-                lista.buscaAnterior(target);
-                lista.apuntador.setSiguiente(lista.primero);
-                lista.avanzaApuntador();
-                lista.apuntador.setSiguiente(target.getSiguiente()); // asigna "a" o "b" si comparten referencia del primero
-                lista.primero = target;
-                lista.primero.setSiguiente(auxiliar);
-                System.out.println("FUNCIONA EL INTERCAMBIO");
-            } else {
-                auxiliar = a.getSiguiente();
-                lista.buscaAnterior(b);
+            Nodo auxiliar = lista.apuntador == a ? b : a; // guarda al nodo contrario
+            a = lista.apuntador == a ? a : b ; // intercambia entre a y b
+            b = auxiliar; // b vale el nodo contrario al que encontro el apuntador.
+            // LO ANTERIOR ORDENA  a < b sin importar como inserten los nodos como parametros
+            // a SIEMPRE esta primero que b
+            if(lista.primero == a || lista.primero == b)
+            {
+                Nodo auxiliar2 = a.getSiguiente();
+                auxiliar = b.getSiguiente();
+                
+                lista.primero = b;
+                lista.primero.setSiguiente(auxiliar2);
+                lista.apuntador = auxiliar2;
+                while(lista.apuntador != null)
+                {
+                    if(lista.apuntador.getSiguiente() == b)
+                        break;
+                    lista.avanzaApuntador();
+                }
                 lista.apuntador.setSiguiente(a);
-                a.setSiguiente(b.getSiguiente());
-                lista.buscaAnterior(a);
-                b.setSiguiente(auxiliar);
+                a.setSiguiente(auxiliar);
+            }
+            else
+            {
+                Nodo auxiliar2 = a.getSiguiente();
+                auxiliar = b.getSiguiente();
+                b.setSiguiente(auxiliar2);
+                lista.inicializaRecorrido();
+                while(lista.apuntador.getSiguiente() != a)
+                    lista.avanzaApuntador();
                 lista.apuntador.setSiguiente(b);
-                System.out.println("INTERCAMBIO NO PRIMERO FUNCIONA");
+                lista.avanzaApuntador();
+                while(lista.apuntador.getSiguiente() != b)
+                    lista.avanzaApuntador();
+                a.setSiguiente(auxiliar);
+                lista.apuntador.setSiguiente(a);
             }
         }
         else if( a == b)
-            System.out.println("NO PUEDES INTERCAMBIAR DE POSICION AL MISMO NODO");
+        {
+            System.out.println("NO SE PUEDE INTERCAMBIAR AL MISMO NODO");
+        }
         else
         {
-            System.out.println("LA LISTA ESTA VACIA");
+            System.out.println("La lista es menor a 1 o existe otro error en los nodos");
+            System.out.println("INTERCAMBIO NODO A: " + a );
+            System.out.println("NODO B: " + b);
+            lista.imprimeTodo();
+            System.out.println("---------------------------------------------------");
         }
     }
      
@@ -698,66 +712,13 @@ public class Lista {
                         this.intercambiaNodos(this, comparador, this.apuntador);
                         this.apuntador = comparador;
                         comparador = auxiliar;
-                        this.imprimeTodo();
-                        System.out.println("FIN DE VUELTA " + j);
                     }
                     this.avanzaApuntador();
                 }
             }
-                
-            /*int i;
-            Nodo auxiliar1;
-            Nodo auxiliar2; // este nodo auxiliar evita que el apuntador pierdda la secuencia depues de usar el metodo IntercambiaNodo
-            this.inicializaRecorrido();
-            
-            for(i = 0 ; i <= this.contadorNodos - 2; i ++ )
-            {
-                
-                
-                this.buscaNodo(POSICION, i);
-                auxiliar1 = this.apuntador;
-                //this.avanzaApuntador(); // j + 1
-                while (this.apuntador != null) 
-                {
-                    this.buscaNodo(POSICION,i+1);
-                    if (this.primero.getEdad() > this.apuntador.getEdad()) 
-                    {
-                        auxiliar2 = this.apuntador.getSiguiente();
-                        System.out.println("NODO A: " + this.primero.getEdad() + " | NODO APUNTADOR: " + this.apuntador.getEdad());
-                        this.intercambiaNodos(this, primero, this.apuntador);
-                        this.imprimeTodo();
-                        this.apuntador = auxiliar2; // auxiliar2 le recuerda quien era antes de intercambiar los nodos al apuntador
-                    }
-                    else
-                        this.avanzaApuntador();
-                    System.out.println("aquifallawhile");
-                }
-                System.out.println("aquifallafor");
-            }*/
-                    
-            /*int i;
-            Nodo auxiliar = this.primero;
-            Nodo auxiliar2;
-            this.inicializaRecorrido();
-            for (i = 1; i <= this.contadorNodos - 1; i++) 
-            {
-                while (!this.esUltimo(this.apuntador)) 
-                {
-                    if (auxiliar.getEdad() > this.apuntador.getEdad()) 
-                    {
-                        auxiliar2 = this.apuntador;
-                        this.intercambiaNodos(this, auxiliar, this.apuntador);
-                        auxiliar = auxiliar2;
-                    }
-                    this.avanzaApuntador();
-                }
-                auxiliar = auxiliar.getSiguiente();
-            }*/
             this.ordenada = true;
         } else 
-        {
             System.out.println("Lista vacia cantidad de nodos: " + this.contadorNodos);
-        }
     }
      
      public void ordenEdadDIntercambio() // ordenamiento por edad Descendente por metodo de intercambio
@@ -855,13 +816,13 @@ public class Lista {
     public void prueba()
     {
         this.buscaNodo(POSICION, 3);
-     /*  this.buscaNodo(1);
-        var aux1 = this.apuntador;
-        this.buscaNodo(3);
-        var aux2 = this.apuntador;
-        this.intercambiaNodos(this, aux1, aux2);
-    */
+        Nodo auxiliar1 = this.apuntador;
+        this.buscaNodo(POSICION, 2);
+        Nodo auxiliar2 = this.apuntador;
+        this.intercambiaNodos(this, auxiliar1, auxiliar2);
+        this.imprimeTodo();
     }
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

@@ -10,9 +10,9 @@ public class TestLista {
         alumnos.insertaNodo(null, "Alberto", "Armenta", "Galvan", 4);
         alumnos.insertaNodo(null, "Juan", "Melendez", "Sanchez", 6);
         alumnos.insertaNodo(null,"Pedro","de la mar", "LOL", 2);
+        alumnos.insertaNodo(null,"Juancho","Robleddo", "WOW", 0);
         alumnos.imprimeTodo();
         System.out.println("FIN ORIGINAL");
-       // alumnos.prueba();
         alumnos.ordenEdadAIntercambio();
         alumnos.imprimeTodo();
         /*
