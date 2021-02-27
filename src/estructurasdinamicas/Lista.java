@@ -691,7 +691,7 @@ public class Lista {
         }
     }
      
-     public void ordenEdadAIntercambio() // ordenamiento por edad Ascendente por metodo de intercambio
+     public void ordenEdadIntercambioA() // ordenamiento por edad Ascendente por metodo de intercambio
     {
          if(!isVacia() && 1 < this.contadorNodos)
          {
@@ -722,7 +722,7 @@ public class Lista {
          }
     }
      
-    public void ordenEdadDIntercambio() // ordenamiento por edad Descendente por metodo de intercambio
+    public void ordenEdadIntercambioD() // ordenamiento por edad Descendente por metodo de intercambio
     {
                  if(!isVacia() && 1 < this.contadorNodos)
          {
@@ -751,6 +751,64 @@ public class Lista {
          {
              System.out.println(" La lista contiene nodos insuficientes  contadorNodos = " + this.contadorNodos);
          }
+    }
+    
+    public void ordenEdadSeleccionA()
+    {
+        if(!isVacia() && 1 < this.contadorNodos)
+        {
+            this.inicializaRecorrido();
+            Nodo iterador = this.primero; // se utiliza para las pasadas desde la posicion  hasta n-1
+            Nodo menor = iterador; // se utiliza para las comparaciones de edades
+            Nodo recuperador; // recupera la secuencia de las pasadas
+            this.avanzaApuntador();
+            while(iterador != this.ultimo)
+            {
+                while(this.apuntador != null)
+                {
+                    if(menor.getEdad() > this.apuntador.getEdad())
+                        menor = this.apuntador;
+                    this.avanzaApuntador();
+                }
+                recuperador = iterador.getSiguiente();
+                this.intercambiaNodos(this, iterador, menor);
+                iterador = menor = recuperador;
+                this.apuntador = iterador.getSiguiente();
+            }
+        }
+        else
+        {
+            System.out.println("NO ES POSIBLE EL ORDEN SELECCION, CONNTADOR DE NODDOS = " + this.contadorNodos);
+        }
+    }
+    
+    public void ordenEdadSeleccionD()
+    {
+        if(!isVacia() && 1 < this.contadorNodos)
+        {
+            this.inicializaRecorrido();
+            Nodo iterador = this.primero; // se utiliza para las pasadas desde la posicion  hasta n-1
+            Nodo mayor = iterador; // se utiliza para las comparaciones de edades
+            Nodo recuperador; // recupera la secuencia de las pasadas
+            this.avanzaApuntador();
+            while(iterador != this.ultimo)
+            {
+                while(this.apuntador != null)
+                {
+                    if(mayor.getEdad() < this.apuntador.getEdad())
+                        mayor = this.apuntador;
+                    this.avanzaApuntador();
+                }
+                recuperador = iterador.getSiguiente();
+                this.intercambiaNodos(this, iterador, mayor);
+                iterador = mayor = recuperador;
+                this.apuntador = iterador.getSiguiente();
+            }
+        }
+        else
+        {
+            System.out.println("NO ES POSIBLE EL ORDEN SELECCION, CONNTADOR DE NODDOS = " + this.contadorNodos);
+        }        
     }
      
      // GETTERS Y SETTERS
@@ -821,12 +879,7 @@ public class Lista {
     
     public void prueba()
     {
-        this.buscaNodo(POSICION, 3);
-        Nodo auxiliar1 = this.apuntador;
-        this.buscaNodo(POSICION, 2);
-        Nodo auxiliar2 = this.apuntador;
-        this.intercambiaNodos(this, auxiliar1, auxiliar2);
-        this.imprimeTodo();
+ 
     }
     
     @Override
