@@ -168,7 +168,7 @@ public class Lista {
 
     private boolean esUltimo(Nodo nodo)
      {
-         if(nodo != null && nodo.getSiguiente() == null && !isVacia()) // Valida que estemos en el ultimo nodo
+         if(nodo != null && nodo.getSiguiente() == null) // Valida que estemos en el ultimo nodo
              return true;              // true = ultimo y false = es cualquier otro nodo
          return false;
      }
@@ -674,6 +674,8 @@ public class Lista {
                 a.setSiguiente(auxiliar);
                 lista.apuntador.setSiguiente(a);
             }
+            if(lista.esUltimo(a))
+                lista.ultimo = a;
         }
         else if( a == b)
         {
@@ -691,61 +693,65 @@ public class Lista {
      
      public void ordenEdadAIntercambio() // ordenamiento por edad Ascendente por metodo de intercambio
     {
-        if (!isVacia() && 1 < this.contadorNodos) 
-        {
-            int i;
-            int j;
-            Nodo comparador;
-            Nodo auxiliar;
-            
-            this.inicializaRecorrido();
-            for(i = 0 ; i <= this.contadorNodos - 2; i++)
-            {
-                this.buscaNodo(POSICION, i);
-                comparador = this.apuntador;
-                this.avanzaApuntador();
-                for(j = i + 1 ; j <= this.contadorNodos - 1 && this.apuntador != null ; j++ )
-                {
-                    if(comparador.getEdad() > this.apuntador.getEdad())
-                    {
-                        auxiliar = this.apuntador;
-                        this.intercambiaNodos(this, comparador, this.apuntador);
-                        this.apuntador = comparador;
-                        comparador = auxiliar;
-                    }
-                    this.avanzaApuntador();
-                }
-            }
-            this.ordenada = true;
-        } else 
-            System.out.println("Lista vacia cantidad de nodos: " + this.contadorNodos);
+         if(!isVacia() && 1 < this.contadorNodos)
+         {
+             this.inicializaRecorrido();
+             Nodo iterador, continuacion, auxiliar;
+             while(this.apuntador != this.ultimo && this.apuntador != null)
+             {
+                 iterador = this.apuntador;
+                 while(this.apuntador != null)
+                 {
+                     if(iterador.getEdad() > this.apuntador.getEdad())
+                     {
+                         continuacion = this.apuntador.getSiguiente();
+                         auxiliar = this.apuntador;
+                         this.intercambiaNodos(this, iterador, this.apuntador);
+                         iterador = auxiliar;
+                         this.apuntador = continuacion;
+                     }
+                     else
+                         this.avanzaApuntador();
+                 }
+                 this.apuntador = iterador.getSiguiente();
+             }
+         }
+         else
+         {
+             System.out.println(" La lista contiene nodos insuficientes  contadorNodos = " + this.contadorNodos);
+         }
     }
      
-     public void ordenEdadDIntercambio() // ordenamiento por edad Descendente por metodo de intercambio
-     {
-        if (!isVacia() && 1 < this.contadorNodos) 
-        {
-            int i;
-            Nodo auxiliar = this.primero;
-            this.inicializaRecorrido();
-            for (i = 1; i <= this.contadorNodos - 1; i++) 
-            {
-                while (!this.esUltimo(this.apuntador)) 
-                {
-                    if (auxiliar.getEdad() < this.apuntador.getEdad()) 
-                    {
-                        this.intercambiaNodos(this, auxiliar, this.apuntador);
-                    }
-                    this.avanzaApuntador();
-                }
-                auxiliar = auxiliar.getSiguiente();
-            }
-            this.ordenada = true;
-        } else 
-        {
-            System.out.println("Lista vacia cantidad de nodos: " + this.contadorNodos);
-        }
-     }
+    public void ordenEdadDIntercambio() // ordenamiento por edad Descendente por metodo de intercambio
+    {
+                 if(!isVacia() && 1 < this.contadorNodos)
+         {
+             this.inicializaRecorrido();
+             Nodo iterador, continuacion, auxiliar;
+             while(this.apuntador != this.ultimo && this.apuntador != null)
+             {
+                 iterador = this.apuntador;
+                 while(this.apuntador != null)
+                 {
+                     if(iterador.getEdad() < this.apuntador.getEdad())
+                     {
+                         continuacion = this.apuntador.getSiguiente();
+                         auxiliar = this.apuntador;
+                         this.intercambiaNodos(this, iterador, this.apuntador);
+                         iterador = auxiliar;
+                         this.apuntador = continuacion;
+                     }
+                     else
+                         this.avanzaApuntador();
+                 }
+                 this.apuntador = iterador.getSiguiente();
+             }
+         }
+         else
+         {
+             System.out.println(" La lista contiene nodos insuficientes  contadorNodos = " + this.contadorNodos);
+         }
+    }
      
      // GETTERS Y SETTERS
     public Nodo getPrimero() {

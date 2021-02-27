@@ -12,6 +12,7 @@ public class TestLista {
         alumnos.insertaNodo(null,"Pedro","de la mar", "LOL", 2);
         alumnos.insertaNodo(null,"Juancho","Robleddo", "WOW", 0);
         alumnos.imprimeTodo();
+        System.out.println("alumnos.getContadorNodos() = " + alumnos.getContadorNodos());
         System.out.println("FIN ORIGINAL");
         alumnos.ordenEdadAIntercambio();
         alumnos.imprimeTodo();
